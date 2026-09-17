@@ -880,10 +880,14 @@ function scrollToForm(e){if(e)e.preventDefault();var el=document.getElementById(
 
 /* חשיפה הדרגתית בגלילה */
 (function(){
+  var els=document.querySelectorAll('.reveal, .gain');
+  /* נפילה בטוחה: דפדפן ללא IntersectionObserver חושף הכל מיד */
+  if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in');});return;}
+  /* threshold:0, נחשף ברגע שחלק כלשהו נכנס למסך. חשוב לסעיפים ארוכים בנייד */
   var obs=new IntersectionObserver(function(entries){
     entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); obs.unobserve(en.target); } });
-  },{threshold:.12});
-  document.querySelectorAll('.reveal, .gain').forEach(function(el){obs.observe(el);});
+  },{threshold:0, rootMargin:'0px 0px -5% 0px'});
+  els.forEach(function(el){obs.observe(el);});
 })();
 
 /* כפתור חזרה לראש הדף, מופיע רק אחרי גלילה */
